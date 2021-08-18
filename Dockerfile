@@ -1,4 +1,5 @@
 FROM ubuntu:20.04
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Update and install required packages
 RUN apt-get update -y \
@@ -14,11 +15,10 @@ RUN wget -qO - https://qgis.org/downloads/qgis-2021.gpg.key | gpg --no-default-k
     && apt-get update -y
 
 
-ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
 
 ## Install qgis
-RUN apt install -y \
+RUN apt-get install -y \
     binutils \
     qgis \
     qgis-plugin-grass
