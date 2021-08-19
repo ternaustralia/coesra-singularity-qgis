@@ -1,5 +1,4 @@
 FROM ubuntu:20.04
-ARG DEBIAN_FRONTEND=noninteractive
 
 # Update and install required packages
 RUN apt-get update -y \
@@ -14,7 +13,6 @@ RUN wget -qO - https://qgis.org/downloads/qgis-2021.gpg.key | gpg --no-default-k
     && add-apt-repository "deb https://qgis.org/ubuntu $(lsb_release -c -s) main" \
     && apt-get update -y
 
-
 ENV TZ=Australia
 
 ## Install qgis
@@ -27,4 +25,4 @@ RUN apt-get install -y \
 ## FIX here -> https://github.com/dnschneid/crouton/wiki/Fix-error-while-loading-shared-libraries:-libQt5Core.so.5
 RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
 
-ENTRYPOINT qgis
+ENTRYPOINT ["/usr/bin/qgis"]
