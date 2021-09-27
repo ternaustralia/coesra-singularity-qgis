@@ -1,13 +1,28 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
-RUN apt update -y && \
-  apt-get install -y software-properties-common && \
-  add-apt-repository ppa:ubuntugis/ubuntugis-unstable && \
-  apt update -y
+# Update and install required packages
+RUN apt-get update -y \
+    && apt-get install -y \
+    wget \
+    gnupg \
+    software-properties-common
 
-ARG DEBIAN_FRONTEND=noninteractive
+## Download qgis latest version and configure it
+RUN wget -qO - https://qgis.org/downloads/qgis-2021.gpg.key | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/qgis-archive.gpg --import \
+    && chmod a+r /etc/apt/trusted.gpg.d/qgis-archive.gpg \
+    && add-apt-repository "deb https://qgis.org/ubuntu $(lsb_release -c -s) main" \
+    && apt-get update -y
+
 ENV TZ=Australia
 
-RUN apt install -y qgis 
+## Install qgis
+RUN apt-get install -y \
+    binutils \
+    qgis \
+    qgis-plugin-grass
 
-ENTRYPOINT qgis
+## error while loading shared libraries: libQt5Core.so.5: cannot open shared object file: No such file or directory
+## FIX here -> https://github.com/dnschneid/crouton/wiki/Fix-error-while-loading-shared-libraries:-libQt5Core.so.5
+RUN strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+
+ENTRYPOINT ["/usr/bin/qgis"]
