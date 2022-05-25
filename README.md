@@ -8,7 +8,7 @@ The main idea of this repository is to build the `QGIS Odense 3.2` application i
 
 ### Build docker image
 ```
-docker build . -t qgis:3.2
+docker build . -t qgis:3.24
 ```
 
 ### Docker2Singularity
